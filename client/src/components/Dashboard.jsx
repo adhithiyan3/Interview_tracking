@@ -46,7 +46,7 @@ const Dashboard = () => {
     };
 
     fetchInterviews();
-  }, [token, statusFilter, search, refreshTrigger]);
+  }, [token, statusFilter, search, refreshTrigger, API_URL]);
 
   // Handle Add/Edit Form submission
   const handleModalSubmit = async (payload) => {

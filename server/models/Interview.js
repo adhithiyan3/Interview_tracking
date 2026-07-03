@@ -51,6 +51,16 @@ const InterviewSchema = new mongoose.Schema({
     type: String,
     trim: true,
     default: ''
+  },
+  shortlistLevel: {
+    type: String,
+    enum: ['Screening', 'Aptitude', 'Technical', 'HR', 'Final'],
+    default: 'Screening'
+  },
+  rejectionReason: {
+    type: String,
+    trim: true,
+    default: ''
   }
 }, {
   timestamps: true

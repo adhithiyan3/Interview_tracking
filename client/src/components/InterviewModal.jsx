@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X, Briefcase, PlusCircle, Check } from 'lucide-react';
 
+const SHORTLIST_LEVELS = ['Screening', 'Aptitude', 'Technical', 'HR', 'Final'];
+
 const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
@@ -11,6 +13,8 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
   const [notes, setNotes] = useState('');
   const [salary, setSalary] = useState('');
   const [jobDescriptionUrl, setJobDescriptionUrl] = useState('');
+  const [shortlistLevel, setShortlistLevel] = useState('Screening');
+  const [rejectionReason, setRejectionReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,6 +42,8 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
       setNotes(interviewToEdit.notes || '');
       setSalary(interviewToEdit.salary || '');
       setJobDescriptionUrl(interviewToEdit.jobDescriptionUrl || '');
+      setShortlistLevel(interviewToEdit.shortlistLevel || 'Screening');
+      setRejectionReason(interviewToEdit.rejectionReason || '');
     } else {
       // Clear for new interview
       setCompany('');
@@ -55,6 +61,8 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
       setNotes('');
       setSalary('');
       setJobDescriptionUrl('');
+      setShortlistLevel('Screening');
+      setRejectionReason('');
     }
     setError('');
   }, [interviewToEdit, isOpen]);
@@ -77,6 +85,10 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
       setError('Interview date and time is required.');
       return;
     }
+    if (status === 'Rejected' && !rejectionReason.trim()) {
+      setError('Please provide a reason for rejection.');
+      return;
+    }
 
     const payload = {
       company: company.trim(),
@@ -87,7 +99,9 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
       location: location.trim(),
       notes: notes.trim(),
       salary: salary.trim(),
-      jobDescriptionUrl: jobDescriptionUrl.trim()
+      jobDescriptionUrl: jobDescriptionUrl.trim(),
+      shortlistLevel,
+      rejectionReason: status === 'Rejected' ? rejectionReason.trim() : ''
     };
 
     setSubmitting(true);
@@ -102,28 +116,28 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 animate-fade-in max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+      <div className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 md:p-8 animate-fade-in max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
           <div className="flex items-center space-x-2.5">
-            <div className="bg-indigo-600/10 p-2 rounded-xl text-indigo-400">
+            <div className="bg-indigo-50 p-2 rounded-xl text-indigo-600">
               <Briefcase className="w-5 h-5" />
             </div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-bold text-slate-800">
               {interviewToEdit ? 'Edit Interview Application' : 'Add New Interview'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-5 p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs sm:text-sm rounded-xl">
+          <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 text-rose-600 text-xs sm:text-sm rounded-xl">
             {error}
           </div>
         )}
@@ -140,7 +154,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Google, Stripe, etc."
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
                 required
               />
             </div>
@@ -154,7 +168,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 placeholder="Frontend Developer, PM, etc."
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
                 required
               />
             </div>
@@ -167,7 +181,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 type="datetime-local"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
                 required
               />
             </div>
@@ -179,7 +193,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm focus:ring-indigo-500"
               >
                 <option value="Pending">Pending Response</option>
                 <option value="Selected">Selected / Offer</option>
@@ -194,7 +208,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm focus:ring-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm focus:ring-indigo-500"
               >
                 <option value="Technical">Technical Interview</option>
                 <option value="Online">Online / Video Call</option>
@@ -207,6 +221,28 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                Shortlist Level
+              </label>
+              <div className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                {SHORTLIST_LEVELS.map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => setShortlistLevel(level)}
+                    className={`flex-1 py-1.5 rounded-lg text-[11px] font-bold transition-all duration-150 cursor-pointer ${
+                      shortlistLevel === level
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-700 hover:bg-white'
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Expected Salary / Comp (Optional)
               </label>
               <input
@@ -214,11 +250,11 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 value={salary}
                 onChange={(e) => setSalary(e.target.value)}
                 placeholder="$120k + stock, €90k, etc."
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Location / Link (Optional)
               </label>
@@ -227,7 +263,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Zoom, Google Meet, London HQ, remote, etc."
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
               />
             </div>
 
@@ -240,7 +276,7 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 value={jobDescriptionUrl}
                 onChange={(e) => setJobDescriptionUrl(e.target.value)}
                 placeholder="https://careers.google.com/jobs/..."
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm"
               />
             </div>
 
@@ -253,24 +289,41 @@ const InterviewModal = ({ isOpen, onClose, onSubmit, interviewToEdit }) => {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Prepare system design questions, check company core values, review projects..."
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-xl glass-input text-white text-sm resize-none"
+                className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm resize-none"
               />
             </div>
+
+            {/* Rejection Reason — only visible when status is Rejected */}
+            {status === 'Rejected' && (
+              <div className="md:col-span-2 animate-fade-in">
+                <label className="block text-xs font-bold uppercase tracking-wider text-rose-500 mb-1.5">
+                  Rejection Reason *
+                </label>
+                <textarea
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Describe the reason for rejection (e.g., didn't clear technical round, salary mismatch, etc.)"
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl glass-input text-slate-800 text-sm resize-none border-rose-200 focus:border-rose-500"
+                  required
+                />
+              </div>
+            )}
           </div>
 
           {/* Form Actions Footer */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800 mt-6">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer text-sm font-semibold"
+              className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition cursor-pointer text-sm font-semibold"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-slate-400 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/30 flex items-center space-x-1.5 cursor-pointer text-sm"
+              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-300 disabled:text-white text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 flex items-center space-x-1.5 cursor-pointer text-sm"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

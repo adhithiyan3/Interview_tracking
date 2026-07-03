@@ -35,7 +35,7 @@ router.get('/', auth, async (req, res) => {
 // @desc    Create an interview
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const { company, role, status, date, type, location, notes, salary, jobDescriptionUrl } = req.body;
+  const { company, role, status, date, type, location, notes, salary, jobDescriptionUrl, shortlistLevel, rejectionReason } = req.body;
 
   if (!company || !role || !date) {
     return res.status(400).json({ msg: 'Company, role, and date are required' });
@@ -52,7 +52,9 @@ router.post('/', auth, async (req, res) => {
       location: location || '',
       notes: notes || '',
       salary: salary || '',
-      jobDescriptionUrl: jobDescriptionUrl || ''
+      jobDescriptionUrl: jobDescriptionUrl || '',
+      shortlistLevel: shortlistLevel || 'Screening',
+      rejectionReason: rejectionReason || ''
     });
 
     const interview = await newInterview.save();
@@ -67,7 +69,7 @@ router.post('/', auth, async (req, res) => {
 // @desc    Update an interview
 // @access  Private
 router.put('/:id', auth, async (req, res) => {
-  const { company, role, status, date, type, location, notes, salary, jobDescriptionUrl } = req.body;
+  const { company, role, status, date, type, location, notes, salary, jobDescriptionUrl, shortlistLevel, rejectionReason } = req.body;
 
   try {
     let interview = await Interview.findById(req.params.id);
@@ -92,6 +94,8 @@ router.put('/:id', auth, async (req, res) => {
     if (notes !== undefined) fields.notes = notes;
     if (salary !== undefined) fields.salary = salary;
     if (jobDescriptionUrl !== undefined) fields.jobDescriptionUrl = jobDescriptionUrl;
+    if (shortlistLevel !== undefined) fields.shortlistLevel = shortlistLevel;
+    if (rejectionReason !== undefined) fields.rejectionReason = rejectionReason;
 
     interview = await Interview.findByIdAndUpdate(
       req.params.id,

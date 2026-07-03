@@ -12,29 +12,29 @@ const Stats = ({ interviews }) => {
       label: 'Total Applications',
       value: total,
       icon: Briefcase,
-      color: 'from-blue-500/20 to-indigo-500/20 text-indigo-400 border-indigo-500/20',
-      iconColor: 'bg-indigo-500/10 text-indigo-400'
+      color: 'from-indigo-50 to-blue-50 text-indigo-600 border-indigo-100',
+      iconColor: 'bg-indigo-100 text-indigo-600'
     },
     {
       label: 'Pending Response',
       value: pending,
       icon: HelpCircle,
-      color: 'from-amber-500/20 to-yellow-500/20 text-yellow-500 border-yellow-500/20',
-      iconColor: 'bg-yellow-500/10 text-yellow-500'
+      color: 'from-amber-50 to-yellow-50 text-amber-600 border-amber-100',
+      iconColor: 'bg-amber-100 text-amber-600'
     },
     {
       label: 'Offers Received',
       value: selected,
       icon: CheckCircle2,
-      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/20',
-      iconColor: 'bg-emerald-500/10 text-emerald-400'
+      color: 'from-emerald-50 to-teal-50 text-emerald-600 border-emerald-100',
+      iconColor: 'bg-emerald-100 text-emerald-600'
     },
     {
       label: 'Rejections',
       value: rejected,
       icon: XCircle,
-      color: 'from-rose-500/20 to-red-500/20 text-rose-400 border-rose-500/20',
-      iconColor: 'bg-rose-500/10 text-rose-400'
+      color: 'from-rose-50 to-red-50 text-rose-600 border-rose-100',
+      iconColor: 'bg-rose-100 text-rose-600'
     }
   ];
 
@@ -45,13 +45,13 @@ const Stats = ({ interviews }) => {
         return (
           <div
             key={idx}
-            className={`p-5 rounded-2xl bg-gradient-to-br ${item.color} border flex items-center justify-between shadow-md transition-all duration-300 hover:scale-[1.01]`}
+            className={`p-5 rounded-2xl bg-gradient-to-br ${item.color} border flex items-center justify-between shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-md`}
           >
             <div className="space-y-1">
-              <span className="text-slate-400 text-xs sm:text-sm font-medium tracking-tight">
+              <span className="text-slate-500 text-xs sm:text-sm font-medium tracking-tight">
                 {item.label}
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-800">
                 {item.value}
               </h3>
             </div>
